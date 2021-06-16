@@ -58,6 +58,13 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  infoScanner: {
+    color: colors.gray,
+    width: '90%',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '700',
+  },
   viewIcon: {
     justifyContent: 'center',
   },
@@ -71,8 +78,13 @@ export default StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  viewInput: {
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   input: {
     backgroundColor: 'transparent',
-    width: 70,
+    maxWidth: 70,
   },
 });

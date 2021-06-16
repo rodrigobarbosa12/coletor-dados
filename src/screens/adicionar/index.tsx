@@ -1,6 +1,7 @@
 import React, { useEffect, useState, ReactElement } from 'react';
 import {
   View,
+  Text,
   ScrollView,
   Alert,
   TouchableOpacity,
@@ -115,47 +116,65 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
         title={titulo}
         description={!itens.length ? 'NENHUM ITEM CADASTRADO' : getItens(itens.length)}
       />
-      <ScrollView>
-        {itens.map((item) => (
-          <View key={item.id}>
-            <List.Item
-              title={item.codigo}
-              right={() => (
-                <View style={styles.center}>
-                  <View style={{ ...styles.center, right: '20%' }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        alterarQuantidadePorItem('sub', item.id);
-                      }}
-                    >
-                      <MaterialCommunityIcons name="minus-circle" color={colors.danger} size={30} />
-                    </TouchableOpacity>
-                    <TextInput
-                      value={String(item.quantidade)}
-                      keyboardType="numeric"
-                      style={styles.input}
-                      onChangeText={(total) => {
-                        alterarValorInput(Number(total), item.id);
-                      }}
-                    />
-                    <TouchableOpacity
-                      onPress={() => {
-                        alterarQuantidadePorItem('soma', item.id);
-                      }}
-                    >
-                      <MaterialCommunityIcons name="plus-circle" color={colors.success} size={30} />
+      {!itens.length ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.infoScanner}>
+            Clique no botão de scanner
+            {' '}
+            <MaterialCommunityIcons name="barcode-scan" color={colors.blue} size={20} />
+            {' '}
+            para adicionar um item
+          </Text>
+        </View>
+      ) : (
+        <ScrollView>
+          {itens.map((item) => (
+            <View key={item.id}>
+              <List.Item
+                title={item.codigo}
+                right={() => (
+                  <View style={styles.center}>
+                    <View style={{ ...styles.center, right: '20%' }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          alterarQuantidadePorItem('sub', item.id);
+                        }}
+                      >
+                        <MaterialCommunityIcons name="minus-circle" color={colors.danger} size={30} />
+                      </TouchableOpacity>
+                      <View style={styles.viewInput}>
+                        <TextInput
+                          value={String(item.quantidade)}
+                          keyboardType="numeric"
+                          mode="outlined"
+                          outlineColor="transparent"
+                          multiline
+                          style={styles.input}
+                          dense
+                          onChangeText={(total) => {
+                            alterarValorInput(Number(total), item.id);
+                          }}
+                        />
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          alterarQuantidadePorItem('soma', item.id);
+                        }}
+                      >
+                        <MaterialCommunityIcons name="plus-circle" color={colors.success} size={30} />
+                      </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity onPress={() => removerItem(item.id)}>
+                      <MaterialCommunityIcons name="trash-can-outline" color={colors.grey} size={30} />
                     </TouchableOpacity>
                   </View>
-                  <TouchableOpacity onPress={() => removerItem(item.id)}>
-                    <MaterialCommunityIcons name="trash-can-outline" color={colors.grey} size={30} />
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-            <Divider />
-          </View>
-        ))}
-      </ScrollView>
+                )}
+              />
+              <Divider />
+            </View>
+          ))}
+        </ScrollView>
+      )}
       <FabScanner
         salvarItensPermanente={salvarItensPermanente}
         routeName="Adicionar"

@@ -148,14 +148,20 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
                     >
                       <MaterialCommunityIcons name="minus-circle" color={colors.danger} size={30} />
                     </TouchableOpacity>
-                    <TextInput
-                      value={String(item.quantidade)}
-                      keyboardType="numeric"
-                      style={styles.input}
-                      onChangeText={(total) => {
-                        alterarValorInput(Number(total), item.id);
-                      }}
-                    />
+                    <View style={styles.viewInput}>
+                      <TextInput
+                        value={String(item.quantidade)}
+                        keyboardType="numeric"
+                        mode="outlined"
+                        outlineColor="transparent"
+                        multiline
+                        style={styles.input}
+                        dense
+                        onChangeText={(total) => {
+                          alterarValorInput(Number(total), item.id);
+                        }}
+                      />
+                    </View>
                     <TouchableOpacity
                       onPress={() => alterarQuantidadePorItem('soma', item.id)}
                     >
