@@ -1,6 +1,7 @@
 const defaultColors = {
   // blue: '#007bff',
-  blue: '#3498db',
+  // blue: '#3498db',
+  blue: '#1E73BF',
   indigo: '#6610f2',
   purple: '#6f42c1',
   pink: '#e83e8c',

@@ -49,7 +49,12 @@ const ListItem = ({ route }: Props): ReactElement => {
       const lista = await storage.getEstoqueAsync();
 
       if (lista) {
-        setListaEstoque(JSON.parse(lista));
+        const estoque: ListaEstoque[] = JSON.parse(lista);
+
+        const listaOrdenada = estoque
+          .sort((a, b) => (a.id < b.id ? 1 : -1));
+
+        setListaEstoque(listaOrdenada);
       }
     } catch (error) {
       showErrorForDev(error);
@@ -80,7 +85,7 @@ const ListItem = ({ route }: Props): ReactElement => {
 
   const editarLista = async (lista: ListaEstoque) => {
     try {
-      navigation.navigate('Editar', { lista });
+      navigation.navigate('Editar', { lista, titulo: lista.titulo });
 
       setShowDialog({ [lista.id]: false });
     } catch (error) {

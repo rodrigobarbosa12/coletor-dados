@@ -45,7 +45,7 @@ No link abaixo você encontra o layout do projeto mobile.
 ## 🧩 Instalação
 
 ### Baixe o projeto
-    $ git clone git@gitlab.com:maxscalla/max-coletor.git
+    $ git@github.com:rodrigobarbosa12/coletor-dados.git
 
 ### Instale todas as dependências
     $ yarn

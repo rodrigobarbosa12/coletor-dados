@@ -1,18 +1,32 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  ReactElement,
+} from 'react';
 import {
   View,
-  Text,
   ScrollView,
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import { List, Divider, TextInput } from 'react-native-paper';
+import { List, Divider } from 'react-native-paper';
 import moment from 'moment';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp, RouteProp, ParamListBase } from '@react-navigation/native';
-import FabScanner from '../../components/FabScanner';
+import {
+  FabScanner,
+  ModalAlterarTitulo,
+  ModalAlterarItem,
+  ItemLista,
+} from '../../components';
 import styles from '../adicionar/styles';
-import { colors, showErrorForDev, alertaRemocaoItem } from '../../utils';
+import {
+  colors,
+  showErrorForDev,
+  alertaRemocaoItem,
+  removeListenerNavigation,
+} from '../../utils';
 import ListaEstoque, { Item } from '../../type/ListaEstoque';
 import storage from '../../database/localStorage';
 
@@ -30,8 +44,13 @@ interface Props {
 
 const Editar = ({ navigation, route }: Props): ReactElement => {
   const { params } = route;
-  const [titulo] = useState<string>(moment().format('DD/MM/YYYY H:mm'));
+  const [titulo, setTitulo] = useState<string>(moment().format('YYYYMMDD_Hmmss'));
   const [lista, setLista] = useState<ListaEstoque | null>(null);
+  const [showDialog, setShowDialog] = useState<{[x: string]: boolean}>({});
+  const [editarTitulo, setEditarTitulo] = useState<boolean>(false);
+  const hasUnsavedChanges = Boolean(lista);
+
+  const ultimoItem = lista?.itens[lista?.itens.length - 1];
 
   const getItens = (quantidade: number): string => (
     quantidade > 1 ? `${quantidade} ITENS` : '1 ITEM'
@@ -49,9 +68,10 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
       const listaEstoque: ListaEstoque[] = JSON.parse(listas);
 
       const estoqueAtualizado = listaEstoque
-        .map((item) => (item.id === lista?.id ? lista : item));
+        .map((item) => (item.id === lista?.id ? { ...lista, titulo } : item));
 
       await storage.setEstoqueAsync(estoqueAtualizado);
+      removeListenerNavigation(navigation);
       navigation.navigate('Itens', { updatePage: moment().format('mmss') });
     } catch (error) {
       showErrorForDev(error);
@@ -109,6 +129,11 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
   };
 
   const incluirItemNaLista = (item: Item) => {
+    if (ultimoItem?.codigo === item.codigo) {
+      alterarQuantidadePorItem('soma', ultimoItem.id);
+      return;
+    }
+
     if (lista) {
       const { itens } = lista;
 
@@ -118,8 +143,23 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
     }
   };
 
+  const alterarCodigoDeBarras = (codigo: string, id: string) => {
+    if (!lista) {
+      Alert.alert('Algo deu errado', 'Tente novamente mais tarde.');
+      return;
+    }
+
+    const { itens } = lista;
+
+    const itensAtualizado = itens
+      .map((i) => (i.id === id ? ({ ...i, codigo }) : i));
+
+    setLista({ ...lista, itens: itensAtualizado });
+  };
+
   useEffect(() => {
     setLista(params?.lista);
+    setTitulo(params?.lista.titulo);
   }, [params?.lista]);
 
   useEffect(() => {
@@ -128,59 +168,92 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
     }
   }, [params?.itens]);
 
+  const save = useCallback(confirmarAlteracoes, [lista, navigation, titulo]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) {
+      removeListenerNavigation(navigation);
+      return;
+    }
+
+    removeListenerNavigation(navigation);
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      Alert.alert(
+        'Atenção',
+        'Você não salvou a lista',
+        [
+          {
+            text: 'Sair',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+          {
+            text: 'Continuar na lista',
+          },
+          {
+            text: 'salvar',
+            onPress: save,
+          },
+        ],
+      );
+    });
+  }, [navigation, hasUnsavedChanges, lista, save]);
+
   return (
     <View style={styles.container}>
       <List.Item
         title={titulo}
         description={!lista?.itens.length ? 'NENHUM ITEM CADASTRADO' : getItens(lista.itens.length)}
+        right={() => (
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => setEditarTitulo(true)}>
+              <MaterialCommunityIcons
+                name="circle-edit-outline"
+                color={colors.blue}
+                size={30}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       />
       <ScrollView>
         {lista?.itens.map((item) => (
           <View key={item.id}>
-            <List.Item
-              title={<Text>{item.codigo}</Text>}
-              titleStyle={{ maxWidth: '80%' }}
-              right={() => (
-                <View style={styles.center}>
-                  <View style={{ ...styles.center, right: '20%' }}>
-                    <TouchableOpacity
-                      onPress={() => alterarQuantidadePorItem('sub', item.id)}
-                    >
-                      <MaterialCommunityIcons name="minus-circle" color={colors.danger} size={30} />
-                    </TouchableOpacity>
-                    <View style={styles.viewInput}>
-                      <TextInput
-                        value={String(item.quantidade)}
-                        keyboardType="numeric"
-                        mode="outlined"
-                        outlineColor="transparent"
-                        multiline
-                        style={styles.input}
-                        dense
-                        onChangeText={(total) => {
-                          alterarValorInput(Number(total), item.id);
-                        }}
-                      />
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => alterarQuantidadePorItem('soma', item.id)}
-                    >
-                      <MaterialCommunityIcons name="plus-circle" color={colors.success} size={30} />
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableOpacity onPress={() => removerItem(item.id)}>
-                    <MaterialCommunityIcons name="trash-can-outline" color={colors.grey} size={30} />
-                  </TouchableOpacity>
-                </View>
-              )}
+            <TouchableOpacity
+              onPress={() => {
+                if (ultimoItem?.id === item.id) {
+                  setShowDialog({ [item.id]: true });
+                  return;
+                }
+
+                removerItem(item.id);
+              }}
+            >
+              <ItemLista item={item} ultimoItemId={ultimoItem?.id} />
+              <Divider />
+            </TouchableOpacity>
+            <ModalAlterarItem
+              visible={showDialog[item.id]}
+              onDismiss={() => setShowDialog({ [item.id]: false })}
+              removerItem={removerItem}
+              onChangeCodigo={alterarCodigoDeBarras}
+              alterarValorInput={alterarValorInput}
+              alterarQuantidadePorItem={alterarQuantidadePorItem}
+              item={item}
             />
-            <Divider />
           </View>
         ))}
       </ScrollView>
       <FabScanner
         salvarItensPermanente={confirmarAlteracoes}
         routeName="Editar"
+      />
+      <ModalAlterarTitulo
+        visible={editarTitulo}
+        setVisible={setEditarTitulo}
+        titulo={titulo}
+        setTitulo={setTitulo}
       />
     </View>
   );

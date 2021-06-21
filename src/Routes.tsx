@@ -7,6 +7,7 @@ import Adicionar from './screens/adicionar';
 import Itens from './screens/itens';
 import Scanner from './screens/adicionar/Scanner';
 import Editar from './screens/editar';
+import CadastroManual from './screens/adicionar/CadastroManual';
 
 const Routes = (): ReactElement => {
   const { Navigator, Screen } = createStackNavigator();
@@ -47,6 +48,13 @@ const Routes = (): ReactElement => {
           component={Editar}
           options={{
             header: () => <BarHeader title="Editar" search={false} />,
+          }}
+        />
+        <Screen
+          name="CadastroManual"
+          component={CadastroManual}
+          options={{
+            header: () => <BarHeader title="Cadastro manual" search={false} />,
           }}
         />
       </Navigator>

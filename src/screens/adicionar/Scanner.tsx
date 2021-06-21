@@ -6,9 +6,8 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import { RouteProp, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { colors, showErrorForDev } from '../../utils';
+import { showErrorForDev, validadorEan } from '../../utils';
 import { stylesScanner as styles } from './styles';
 
 type RootStackParamList = {
@@ -23,7 +22,6 @@ interface Props {
 const Scanner = ({ navigation, route }: Props): ReactElement => {
   const { params } = route;
   const [hasPermission, setHasPermission] = useState<boolean>(false);
-  const [typeScanner, setTypeScanner] = useState<'front' | 'back'>('back');
   const [scanned, setScanned] = useState<boolean>(false);
 
   useEffect(() => {
@@ -33,11 +31,11 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
     })();
   }, []);
 
-  const salvarTemporariamente = async (codigo: string) => {
+  const incluirNaListaTemporaria = async (codigo: string) => {
     try {
       setScanned(true);
       const item = {
-        id: moment().format('YYYYMMDD-HHmmss'),
+        id: `item-${moment().format('YYYYMMDD-HHmmss')}`,
         codigo,
         quantidade: 1,
       };
@@ -47,8 +45,12 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
     }
   };
 
-  const handleBarCodeScanned = ({ data }: { data: string }) => {
-    salvarTemporariamente(data);
+  const handleBarCodeScanned = async ({ data }: { data: string }) => {
+    if (!await validadorEan(data, setScanned)) {
+      return;
+    }
+
+    incluirNaListaTemporaria(data);
   };
 
   if (hasPermission === null) {
@@ -75,17 +77,16 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
     <>
       <View style={styles.container}>
         <BarCodeScanner
-          type={typeScanner}
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barCodeTypes={['ean13']}
           style={styles.scanner}
         />
       </View>
       <View style={styles.menuBottom}>
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => setTypeScanner(typeScanner === 'back' ? 'front' : 'back')}
+          onPress={() => navigation.navigate('CadastroManual')}
         >
-          <MaterialCommunityIcons name="camera-retake-outline" color={colors.blue} size={40} />
+          <Text style={styles.text}>Cadastrar manualmente</Text>
         </TouchableOpacity>
       </View>
     </>

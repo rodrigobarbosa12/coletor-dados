@@ -1,4 +1,9 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+import React, {
+  useEffect,
+  useState,
+  ReactElement,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -6,13 +11,23 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import { List, Divider, TextInput } from 'react-native-paper';
+import { List, Divider } from 'react-native-paper';
 import moment from 'moment';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp, RouteProp, ParamListBase } from '@react-navigation/native';
-import FabScanner from '../../components/FabScanner';
+import {
+  FabScanner,
+  ModalAlterarTitulo,
+  ModalAlterarItem,
+  ItemLista,
+} from '../../components';
 import styles from './styles';
-import { colors, showErrorForDev, alertaRemocaoItem } from '../../utils';
+import {
+  colors,
+  showErrorForDev,
+  alertaRemocaoItem,
+  removeListenerNavigation,
+} from '../../utils';
 import { Item } from '../../type/ListaEstoque';
 import storage from '../../database/localStorage';
 
@@ -27,8 +42,13 @@ interface Props {
 
 const Adicionar = ({ navigation, route }: Props): ReactElement => {
   const { params } = route;
-  const [titulo] = useState<string>(moment().format('DD/MM/YYYY H:mm'));
+  const [titulo, setTitulo] = useState<string>(moment().format('YYYYMMDD_Hmmss'));
   const [itens, setItens] = useState<Item[]>([]);
+  const [showDialog, setShowDialog] = useState<{[x: string]: boolean}>({});
+  const [editarTitulo, setEditarTitulo] = useState<boolean>(false);
+  const hasUnsavedChanges = Boolean(itens.length);
+
+  const ultimoItem = itens[itens.length - 1];
 
   const getItens = (quantidade: number): string => (
     quantidade > 1 ? `${quantidade} ITENS` : '1 ITEM'
@@ -44,14 +64,15 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
       const listaEstoque = await storage.getEstoqueAsync();
 
       if (!listaEstoque) {
-        await storage.setEstoqueAsync([{ titulo, itens, id: moment().format('Hmmss') }]);
+        await storage.setEstoqueAsync([{ titulo, itens, id: `lista-${moment().format('YYYYMMDD-HHmmss')}` }]);
         navigation.navigate('Home');
         return;
       }
 
       const listaAtualizada = JSON.parse(listaEstoque);
-      listaAtualizada.push({ titulo, itens, id: moment().format('Hmmss') });
-      storage.setEstoqueAsync(listaAtualizada);
+      listaAtualizada.push({ titulo, itens, id: `lista-${moment().format('YYYYMMDD-HHmmss')}` });
+      await storage.setEstoqueAsync(listaAtualizada);
+      removeListenerNavigation(navigation);
       navigation.navigate('Home');
     } catch (error) {
       showErrorForDev(error);
@@ -104,17 +125,77 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
     setItens([...itensAtualizado]);
   };
 
+  const alterarCodigoDeBarras = (codigo: string, id: string) => {
+    if (!itens) {
+      Alert.alert('Algo deu errado', 'Tente novamente mais tarde.');
+      return;
+    }
+
+    const itensAtualizado = itens
+      .map((i) => (i.id === id ? ({ ...i, codigo }) : i));
+
+    setItens([...itensAtualizado]);
+  };
+
   useEffect(() => {
+    if (ultimoItem && ultimoItem?.codigo === params?.itens.codigo) {
+      alterarQuantidadePorItem('soma', ultimoItem.id);
+      return;
+    }
+
     if (params?.itens) {
       setItens([...itens, params?.itens] || []);
     }
   }, [params?.itens]);
+
+  const save = useCallback(salvarItensPermanente, [itens, navigation, titulo]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) {
+      removeListenerNavigation(navigation);
+      return;
+    }
+
+    removeListenerNavigation(navigation);
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      Alert.alert(
+        'Atenção',
+        'Você não salvou a lista',
+        [
+          {
+            text: 'Sair',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+          {
+            text: 'Continuar na lista',
+          },
+          {
+            text: 'salvar',
+            onPress: save,
+          },
+        ],
+      );
+    });
+  }, [navigation, hasUnsavedChanges, itens, save]);
 
   return (
     <View style={styles.container}>
       <List.Item
         title={titulo}
         description={!itens.length ? 'NENHUM ITEM CADASTRADO' : getItens(itens.length)}
+        right={() => (
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => setEditarTitulo(true)}>
+              <MaterialCommunityIcons
+                name="circle-edit-outline"
+                color={colors.blue}
+                size={30}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       />
       {!itens.length ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -130,47 +211,28 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
         <ScrollView>
           {itens.map((item) => (
             <View key={item.id}>
-              <List.Item
-                title={item.codigo}
-                right={() => (
-                  <View style={styles.center}>
-                    <View style={{ ...styles.center, right: '20%' }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          alterarQuantidadePorItem('sub', item.id);
-                        }}
-                      >
-                        <MaterialCommunityIcons name="minus-circle" color={colors.danger} size={30} />
-                      </TouchableOpacity>
-                      <View style={styles.viewInput}>
-                        <TextInput
-                          value={String(item.quantidade)}
-                          keyboardType="numeric"
-                          mode="outlined"
-                          outlineColor="transparent"
-                          multiline
-                          style={styles.input}
-                          dense
-                          onChangeText={(total) => {
-                            alterarValorInput(Number(total), item.id);
-                          }}
-                        />
-                      </View>
-                      <TouchableOpacity
-                        onPress={() => {
-                          alterarQuantidadePorItem('soma', item.id);
-                        }}
-                      >
-                        <MaterialCommunityIcons name="plus-circle" color={colors.success} size={30} />
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity onPress={() => removerItem(item.id)}>
-                      <MaterialCommunityIcons name="trash-can-outline" color={colors.grey} size={30} />
-                    </TouchableOpacity>
-                  </View>
-                )}
+              <TouchableOpacity
+                onPress={() => {
+                  if (ultimoItem?.id === item.id) {
+                    setShowDialog({ [item.id]: true });
+                    return;
+                  }
+
+                  removerItem(item.id);
+                }}
+              >
+                <ItemLista item={item} ultimoItemId={ultimoItem?.id} />
+                <Divider />
+              </TouchableOpacity>
+              <ModalAlterarItem
+                visible={showDialog[item.id]}
+                onDismiss={() => setShowDialog({ [item.id]: false })}
+                removerItem={removerItem}
+                onChangeCodigo={alterarCodigoDeBarras}
+                alterarValorInput={alterarValorInput}
+                alterarQuantidadePorItem={alterarQuantidadePorItem}
+                item={item}
               />
-              <Divider />
             </View>
           ))}
         </ScrollView>
@@ -178,6 +240,12 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
       <FabScanner
         salvarItensPermanente={salvarItensPermanente}
         routeName="Adicionar"
+      />
+      <ModalAlterarTitulo
+        visible={editarTitulo}
+        setVisible={setEditarTitulo}
+        titulo={titulo}
+        setTitulo={setTitulo}
       />
     </View>
   );

@@ -1,12 +1,11 @@
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
-import moment from 'moment';
 import { Alert } from 'react-native';
 import { showErrorForDev } from '../../utils';
 import ListaEstoque from '../../type/ListaEstoque';
 import storage from '../../database/localStorage';
 
-const exportarEmJson = async (callback: () => void) => {
+const exportarEmJson = async (fileName: string, callback: () => void) => {
   try {
     const armazem: string | null = await storage.getEstoqueAsync();
 
@@ -14,8 +13,6 @@ const exportarEmJson = async (callback: () => void) => {
       Alert.alert('Atenção', 'A lista está vazia');
       return;
     }
-
-    const fileName = `${moment().format('YYYYMMDD_HHmmss')}`;
 
     const fileUri = `${FileSystem.documentDirectory}${fileName}.json`;
     await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(armazem));
@@ -48,9 +45,7 @@ const exportarEmTxt = async (fileName: string, callback: () => void) => {
         content += `${item.codigo},${item.quantidade}\n`;
       });
 
-    const nomeArquivo = `${moment().format('YYYYMMDD_HHmmss')}`;
-
-    const fileUri = `${FileSystem.documentDirectory}${nomeArquivo}.txt`;
+    const fileUri = `${FileSystem.documentDirectory}${fileName}.txt`;
     await FileSystem.writeAsStringAsync(fileUri, content.trim());
 
     await Sharing.shareAsync(fileUri, { mimeType: 'text/plain' });
@@ -64,7 +59,7 @@ const exportarEmTxt = async (fileName: string, callback: () => void) => {
 const exportarLista = (fileName: string, type: string, callback: () => void): void => {
   switch (type) {
     case 'json':
-      exportarEmJson(callback);
+      exportarEmJson(fileName, callback);
       break;
     case 'txt':
       exportarEmTxt(fileName, callback);

@@ -1,22 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { colors } from '../../utils';
 
-export const stylesSalvarItem = StyleSheet.create({
-  container: {
-    marginHorizontal: 10,
-  },
-  input: {
-    backgroundColor: 'transparent',
-  },
-  input2: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
-  button: {
-    marginHorizontal: 10,
-  },
-});
-
 export const stylesScanner = StyleSheet.create({
   container: {
     top: 0,
@@ -46,10 +30,27 @@ export const stylesScanner = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  text: {
+    color: colors.white,
+    fontSize: 20,
+    fontWeight: '700',
+  },
+});
+
+export const stylesCadastroManual = StyleSheet.create({
+  container: {
+    marginVertical: 5,
+    marginHorizontal: 15,
+  },
+  input: {
+    backgroundColor: 'transparent',
+  },
+  input2: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
   button: {
-    padding: 5,
-    borderRadius: 30,
-    backgroundColor: colors.white,
+    marginHorizontal: 10,
   },
 });
 

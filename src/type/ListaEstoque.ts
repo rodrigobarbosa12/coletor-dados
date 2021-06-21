@@ -6,7 +6,7 @@ interface ListaEstoque {
 
 export interface Item {
   id: string,
-  codigo: number,
+  codigo: string,
   quantidade: number,
 }
 

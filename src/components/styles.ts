@@ -31,4 +31,38 @@ export const stylesFabScanner = StyleSheet.create({
   },
 });
 
+export const stylesEditar = StyleSheet.create({
+  container: {
+    marginVertical: 25,
+    marginHorizontal: 20,
+  },
+  input: {
+    backgroundColor: 'transparent',
+  },
+  input2: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  button: {
+    marginHorizontal: 10,
+  },
+});
+
+export const stylesItemList = StyleSheet.create({
+  viewQuantidade: {
+    width: '20%',
+    height: 54,
+    backgroundColor: colors.blue,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewOption: {
+    width: '15%',
+    height: 54,
+    backgroundColor: colors.light,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 export default styles;
