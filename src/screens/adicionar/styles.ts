@@ -20,7 +20,7 @@ export const stylesScanner = StyleSheet.create({
     width: Dimensions.get('window').width,
   },
   menuBottom: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
     position: 'absolute',
     right: 0,
     bottom: 0,
@@ -57,7 +57,7 @@ export const stylesCadastroManual = StyleSheet.create({
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   infoScanner: {
     color: colors.gray,
@@ -72,7 +72,7 @@ export default StyleSheet.create({
   iconItem: {
     padding: 4,
     borderRadius: 20,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
   },
   center: {
     justifyContent: 'center',

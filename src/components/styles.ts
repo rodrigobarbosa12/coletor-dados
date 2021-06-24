@@ -12,7 +12,7 @@ export const stylesFabSalvarItem = StyleSheet.create({
     bottom: 0,
   },
   fab: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
     marginHorizontal: 5,
   },
 });
@@ -26,7 +26,7 @@ export const stylesFabScanner = StyleSheet.create({
     bottom: 0,
   },
   fab: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
     marginHorizontal: 5,
   },
 });
@@ -52,7 +52,7 @@ export const stylesItemList = StyleSheet.create({
   viewQuantidade: {
     width: '20%',
     height: 54,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
     justifyContent: 'center',
     alignItems: 'center',
   },

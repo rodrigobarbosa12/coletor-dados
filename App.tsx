@@ -10,7 +10,7 @@ const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: colors.blue,
+    primary: colors.purple,
     accent: '#f1c40f',
   },
 };

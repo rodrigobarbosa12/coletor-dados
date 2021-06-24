@@ -190,7 +190,7 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
             <TouchableOpacity onPress={() => setEditarTitulo(true)}>
               <MaterialCommunityIcons
                 name="circle-edit-outline"
-                color={colors.blue}
+                color={colors.purple}
                 size={30}
               />
             </TouchableOpacity>
@@ -202,7 +202,7 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
           <Text style={styles.infoScanner}>
             Clique no botão de scanner
             {' '}
-            <MaterialCommunityIcons name="barcode-scan" color={colors.blue} size={20} />
+            <MaterialCommunityIcons name="barcode-scan" color={colors.purple} size={20} />
             {' '}
             para adicionar um item
           </Text>

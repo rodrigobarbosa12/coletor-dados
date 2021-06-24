@@ -5,6 +5,7 @@ import BarHeader from './components/BarHeader';
 import Home from './screens/home';
 import Adicionar from './screens/adicionar';
 import Itens from './screens/itens';
+import Search from './screens/itens/Search';
 import Scanner from './screens/adicionar/Scanner';
 import Editar from './screens/editar';
 import CadastroManual from './screens/adicionar/CadastroManual';
@@ -19,7 +20,7 @@ const Routes = (): ReactElement => {
           name="Home"
           component={Home}
           options={{
-            header: () => <BarHeader withGoBack={false} title="Coletor de dados" search={false} />,
+            header: () => <BarHeader withGoBack={false} title="Coletor de dados" search />,
           }}
         />
         <Screen
@@ -27,6 +28,13 @@ const Routes = (): ReactElement => {
           component={Adicionar}
           options={{
             header: () => <BarHeader title="Conferência de estoque" search={false} />,
+          }}
+        />
+        <Screen
+          name="Search"
+          component={Search}
+          options={{
+            header: () => <BarHeader title="Pesquisar no estoque" search={false} />,
           }}
         />
         <Screen

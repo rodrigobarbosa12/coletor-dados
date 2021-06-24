@@ -4,9 +4,7 @@ import { colors } from '../../utils';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: colors.background,
   },
   textResumo: {
     margin: 15,
@@ -20,6 +18,6 @@ export default StyleSheet.create({
   iconItem: {
     padding: 4,
     borderRadius: 20,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
   },
 });

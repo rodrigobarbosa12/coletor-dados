@@ -18,7 +18,7 @@ interface Props {
 const Home = ({ navigation }: Props): ReactElement => (
   <View style={styles.container}>
     <View style={styles.headerText}>
-      <Image source={logo} style={{ width: '50%', height: '50%' }} />
+      <Image source={logo} style={{ width: '40%', height: '52%' }} />
       {/* <Text style={styles.title}>Max scalla</Text> */}
     </View>
     <View style={styles.menu}>
@@ -35,7 +35,7 @@ const Home = ({ navigation }: Props): ReactElement => (
           onPress={() => navigation.navigate('Itens')}
         >
           <MaterialCommunityIcons name="folder-open-outline" color={colors.white} size={50} />
-          <Text style={styles.textButton}>Abrir</Text>
+          <Text style={styles.textButton}>Estoque</Text>
         </TouchableOpacity>
       </View>
     </View>

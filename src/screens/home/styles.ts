@@ -5,7 +5,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 50,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
     justifyContent: 'space-between',
   },
   headerText: {
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     marginHorizontal: 10,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.purple,
   },
   textButton: {
     fontSize: 20,

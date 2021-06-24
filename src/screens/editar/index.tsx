@@ -210,7 +210,7 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
             <TouchableOpacity onPress={() => setEditarTitulo(true)}>
               <MaterialCommunityIcons
                 name="circle-edit-outline"
-                color={colors.blue}
+                color={colors.purple}
                 size={30}
               />
             </TouchableOpacity>
