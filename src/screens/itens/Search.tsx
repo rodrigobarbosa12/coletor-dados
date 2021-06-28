@@ -50,7 +50,12 @@ const Search = ({ navigation, route }: Props): ReactElement => {
     setValueSearch(value);
     setLocais(estoque
       .filter((lista) => {
-        if (lista.itens.filter((item) => item.codigo.includes(value)).length) {
+        if (
+          lista.itens.filter((item) => item.nome
+            .toLowerCase()
+            .includes(value.toLowerCase()))
+            .length
+        ) {
           return lista;
         }
         return null;
@@ -78,6 +83,7 @@ const Search = ({ navigation, route }: Props): ReactElement => {
     <View style={styles.container}>
       <TextInput
         style={{ backgroundColor: 'transparent' }}
+        autoCorrect={false}
         label="Pesquisa"
         right={<TextInput.Icon name="magnify" />}
         value={valueSearch}

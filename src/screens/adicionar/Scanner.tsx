@@ -36,6 +36,7 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
       setScanned(true);
       const item = {
         id: `item-${moment().format('YYYYMMDD-HHmmss')}`,
+        nome: '',
         codigo,
         quantidade: 1,
       };

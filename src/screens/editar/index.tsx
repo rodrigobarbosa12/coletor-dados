@@ -158,6 +158,20 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
     setLista({ ...lista, itens: itensAtualizado });
   };
 
+  const alterarNome = (nome: string, id: string) => {
+    if (!lista) {
+      Alert.alert('Algo deu errado', 'Tente novamente mais tarde.');
+      return;
+    }
+
+    const { itens } = lista;
+
+    const itensAtualizado = itens
+      .map((i) => (i.id === id ? ({ ...i, nome }) : i));
+
+    setLista({ ...lista, itens: itensAtualizado });
+  };
+
   useEffect(() => {
     setLista(params?.lista);
     setTitulo(params?.lista.titulo);
@@ -232,6 +246,7 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
               onDismiss={() => setShowDialog({ [item.id]: false })}
               removerItem={removerItem}
               onChangeCodigo={alterarCodigoDeBarras}
+              onChangeNome={alterarNome}
               alterarValorInput={alterarValorInput}
               alterarQuantidadePorItem={alterarQuantidadePorItem}
               item={item}

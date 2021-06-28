@@ -137,6 +137,18 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
     setItens([...itensAtualizado]);
   };
 
+  const alterarNome = (nome: string, id: string) => {
+    if (!itens) {
+      Alert.alert('Algo deu errado', 'Tente novamente mais tarde.');
+      return;
+    }
+
+    const itensAtualizado = itens
+      .map((i) => (i.id === id ? ({ ...i, nome }) : i));
+
+    setItens([...itensAtualizado]);
+  };
+
   useEffect(() => {
     if (ultimoItem && ultimoItem?.codigo === params?.itens.codigo) {
       alterarQuantidadePorItem('soma', ultimoItem.id);
@@ -222,6 +234,7 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
                 onDismiss={() => setShowDialog({ [item.id]: false })}
                 removerItem={removerItem}
                 onChangeCodigo={alterarCodigoDeBarras}
+                onChangeNome={alterarNome}
                 alterarValorInput={alterarValorInput}
                 alterarQuantidadePorItem={alterarQuantidadePorItem}
                 item={item}

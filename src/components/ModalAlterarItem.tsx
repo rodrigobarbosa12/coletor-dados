@@ -12,6 +12,7 @@ interface Props {
   removerItem: (x: string) => void
   alterarValorInput: (a: number, b: string) => void,
   onChangeCodigo: (a: string, b: string) => void,
+  onChangeNome: (a: string, b: string) => void,
   alterarQuantidadePorItem: (a: string, b: string) => void,
   item: Item,
 }
@@ -23,6 +24,7 @@ const ModalAlterarItem = ({
   alterarQuantidadePorItem,
   alterarValorInput,
   onChangeCodigo,
+  onChangeNome,
   item,
 }: Props): ReactElement => (
   <Portal>
@@ -31,6 +33,13 @@ const ModalAlterarItem = ({
       onDismiss={onDismiss}
     >
       <View style={stylesEditar.container}>
+        <TextInput
+          style={stylesEditar.input}
+          autoCorrect={false}
+          label="Nome"
+          value={item.nome}
+          onChangeText={(value) => onChangeNome(value, item.id)}
+        />
         <TextInput
           style={stylesEditar.input}
           label="Código de barras"

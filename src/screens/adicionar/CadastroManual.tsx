@@ -20,6 +20,7 @@ interface Props {
 const CadastroManual = ({ navigation, route }: Props): ReactElement => {
   const { params } = route;
 
+  const [nome, setNome] = useState<string>('');
   const [codigo, setCodigo] = useState<string>('');
   const [quantidade, setQuantidade] = useState<number>(0);
 
@@ -27,6 +28,7 @@ const CadastroManual = ({ navigation, route }: Props): ReactElement => {
     try {
       const item = {
         id: `item-${moment().format('YYYYMMDD-HHmmss')}`,
+        nome,
         codigo,
         quantidade,
       };
@@ -39,6 +41,13 @@ const CadastroManual = ({ navigation, route }: Props): ReactElement => {
   return (
     <>
       <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          autoCorrect={false}
+          label="Nome"
+          value={nome}
+          onChangeText={(value) => setNome(value)}
+        />
         <TextInput
           style={styles.input}
           label="Código de barras"

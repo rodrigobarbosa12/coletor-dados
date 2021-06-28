@@ -22,6 +22,7 @@ const ModalAlterarTitulo = ({
     <Dialog visible={visible} onDismiss={() => setVisible(false)}>
       <TextInput
         autoFocus
+        autoCorrect={false}
         label="Nome da lista"
         value={titulo}
         onChangeText={(title) => setTitulo(title)}

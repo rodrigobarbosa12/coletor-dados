@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Estoque Orto baby",
+    "slug": "estoque",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/ortobaby/icone.png",
+    "splash": {
+      "image": "./assets/ortobaby/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#e6e6e6"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/ortobaby/icone.png",
+        "backgroundColor": "#e6e6e6"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

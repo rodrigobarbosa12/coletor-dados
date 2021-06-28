@@ -20,7 +20,7 @@ const Routes = (): ReactElement => {
           name="Home"
           component={Home}
           options={{
-            header: () => <BarHeader withGoBack={false} title="Coletor de dados" search />,
+            header: () => <BarHeader withGoBack={false} title="Estoque Orto baby" search />,
           }}
         />
         <Screen

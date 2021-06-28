@@ -12,7 +12,8 @@ interface Props {
 
 const ItemLista = ({ item }: Props): ReactElement => (
   <List.Item
-    title={item.codigo}
+    title={item.nome ? item.nome : item.codigo}
+    description={item.nome ? item.codigo : null}
     titleStyle={{ maxWidth: '80%' }}
     style={{ padding: 0, height: 55 }}
     right={() => (
