@@ -34,6 +34,7 @@ type RootStackParamList = {
   Editar: {
     itens: Item,
     lista: ListaEstoque,
+    routeName: string,
    };
 };
 
@@ -50,7 +51,7 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
   const [editarTitulo, setEditarTitulo] = useState<boolean>(false);
   const hasUnsavedChanges = Boolean(lista);
 
-  const ultimoItem = lista?.itens[lista?.itens.length - 1];
+  const ultimoItem = lista?.itens[0];
 
   const getItens = (quantidade: number): string => (
     quantidade > 1 ? `${quantidade} ITENS` : '1 ITEM'
@@ -72,7 +73,7 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
 
       await storage.setEstoqueAsync(estoqueAtualizado);
       removeListenerNavigation(navigation);
-      navigation.navigate('Itens', { updatePage: moment().format('mmss') });
+      navigation.navigate(params.routeName, { updatePage: moment().format('mmss') });
     } catch (error) {
       showErrorForDev(error);
     }
@@ -218,19 +219,12 @@ const Editar = ({ navigation, route }: Props): ReactElement => {
         )}
       />
       <ScrollView>
-        {lista?.itens.map((item) => (
+        {lista?.itens.reverse().map((item) => (
           <View key={item.id}>
             <TouchableOpacity
-              onPress={() => {
-                if (ultimoItem?.id === item.id) {
-                  setShowDialog({ [item.id]: true });
-                  return;
-                }
-
-                removerItem(item.id);
-              }}
+              onPress={() => setShowDialog({ [item.id]: true })}
             >
-              <ItemLista item={item} ultimoItemId={ultimoItem?.id} />
+              <ItemLista item={item} />
               <Divider />
             </TouchableOpacity>
             <ModalAlterarItem

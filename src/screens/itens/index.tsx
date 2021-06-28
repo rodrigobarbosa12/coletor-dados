@@ -85,7 +85,7 @@ const ListItem = ({ route }: Props): ReactElement => {
 
   const editarLista = async (lista: ListaEstoque) => {
     try {
-      navigation.navigate('Editar', { lista, titulo: lista.titulo });
+      navigation.navigate('Editar', { lista, titulo: lista.titulo, routeName: 'Itens' });
 
       setShowDialog({ [lista.id]: false });
     } catch (error) {

@@ -48,7 +48,7 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
   const [editarTitulo, setEditarTitulo] = useState<boolean>(false);
   const hasUnsavedChanges = Boolean(itens.length);
 
-  const ultimoItem = itens[itens.length - 1];
+  const ultimoItem = itens[0];
 
   const getItens = (quantidade: number): string => (
     quantidade > 1 ? `${quantidade} ITENS` : '1 ITEM'
@@ -209,19 +209,12 @@ const Adicionar = ({ navigation, route }: Props): ReactElement => {
         </View>
       ) : (
         <ScrollView>
-          {itens.map((item) => (
+          {itens.reverse().map((item) => (
             <View key={item.id}>
               <TouchableOpacity
-                onPress={() => {
-                  if (ultimoItem?.id === item.id) {
-                    setShowDialog({ [item.id]: true });
-                    return;
-                  }
-
-                  removerItem(item.id);
-                }}
+                onPress={() => setShowDialog({ [item.id]: true })}
               >
-                <ItemLista item={item} ultimoItemId={ultimoItem?.id} />
+                <ItemLista item={item} />
                 <Divider />
               </TouchableOpacity>
               <ModalAlterarItem

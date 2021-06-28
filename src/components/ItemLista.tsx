@@ -8,10 +8,9 @@ import { stylesItemList as styles } from './styles';
 
 interface Props {
   item: Item,
-  ultimoItemId: string | undefined,
 }
 
-const ItemLista = ({ item, ultimoItemId }: Props): ReactElement => (
+const ItemLista = ({ item }: Props): ReactElement => (
   <List.Item
     title={item.codigo}
     titleStyle={{ maxWidth: '80%' }}
@@ -23,9 +22,7 @@ const ItemLista = ({ item, ultimoItemId }: Props): ReactElement => (
         </View>
         <View style={styles.viewOption}>
           <View style={{ flexDirection: 'row' }}>
-            {ultimoItemId === item.id && (
-              <MaterialCommunityIcons name="playlist-edit" color={colors.gray} size={23} />
-            )}
+            <MaterialCommunityIcons name="playlist-edit" color={colors.gray} size={23} />
             <MaterialCommunityIcons name="trash-can-outline" color={colors.gray} size={20} />
           </View>
         </View>

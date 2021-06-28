@@ -39,7 +39,7 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
         codigo,
         quantidade: 1,
       };
-      navigation.navigate(params?.routeName, { itens: item });
+      navigation.navigate(params.routeName, { itens: item });
     } catch (error) {
       showErrorForDev(error);
     }
@@ -84,7 +84,7 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
       </View>
       <View style={styles.menuBottom}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CadastroManual')}
+          onPress={() => navigation.navigate('CadastroManual', { routeName: params?.routeName })}
         >
           <Text style={styles.text}>Cadastrar manualmente</Text>
         </TouchableOpacity>

@@ -2,17 +2,26 @@ import React, { useState, ReactElement } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { RouteProp, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FabSalvarItem } from '../../components';
 import { colors, showErrorForDev } from '../../utils';
 import { stylesCadastroManual as styles } from './styles';
 
-const CadastroManual = (): ReactElement => {
+type RootStackParamList = {
+  CadastroManual: { routeName: string };
+};
+
+interface Props {
+  navigation: NavigationProp<ParamListBase>,
+  route: RouteProp<RootStackParamList, 'CadastroManual'>
+}
+
+const CadastroManual = ({ navigation, route }: Props): ReactElement => {
+  const { params } = route;
+
   const [codigo, setCodigo] = useState<string>('');
   const [quantidade, setQuantidade] = useState<number>(0);
-
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const incluirNaListaTemporaria = async () => {
     try {
@@ -21,7 +30,7 @@ const CadastroManual = (): ReactElement => {
         codigo,
         quantidade,
       };
-      navigation.navigate('Adicionar', { itens: item });
+      navigation.navigate(params.routeName, { itens: item });
     } catch (error) {
       showErrorForDev(error);
     }
