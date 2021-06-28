@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/ortobaby/icone.png",
         "backgroundColor": "#e6e6e6"
-      }
+      },
+      "package": "com.piska.estoque"
     },
     "web": {
       "favicon": "./assets/favicon.png"
