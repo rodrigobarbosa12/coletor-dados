@@ -47,6 +47,7 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
   };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
+    console.log('opaaaaaaa')
     if (!await validadorEan(data, setScanned)) {
       return;
     }
@@ -78,8 +79,8 @@ const Scanner = ({ navigation, route }: Props): ReactElement => {
     <>
       <View style={styles.container}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          barCodeTypes={['ean13']}
+          onBarCodeScanned={() => console.log('opaaaa')}
+          barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
           style={styles.scanner}
         />
       </View>

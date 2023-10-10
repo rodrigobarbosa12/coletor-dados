@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LISTA_ESTOQUE } from '../../utils/constantes';
 import ListaEstoque from '../../type/ListaEstoque';
 
