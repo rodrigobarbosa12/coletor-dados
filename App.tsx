@@ -6,7 +6,6 @@ import { colors } from './src/utils';
 
 const theme = {
   ...DefaultTheme,
-  // dark: true,
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
